@@ -1,6 +1,8 @@
 const robotron = document.querySelector("#robotron");
 const estatisticas = document.querySelectorAll("[data-estatistica]");
 const controles = document.querySelectorAll("[data-controle]");
+var cores = document.querySelector('.cores');
+var botaoCor = document.querySelector('.botao-cor');
 const pecas = 
 {
     "bracos": {
@@ -35,25 +37,38 @@ const pecas =
     }
 };
 
+cores.addEventListener("change", (evento) =>{
+    robotron.src = "img/" + (evento.target.value) + ".png";
+} ); 
 
 controles.forEach((elemento) => {
     elemento.addEventListener("click", (evento) => {
-        manipulaDados(evento.target.dataset.controle, evento.target.parentNode)
-        atualizaEstatistica(evento.target.dataset.peca)
+        const operacao = evento.target.dataset.controle;
+        const controles =  evento.target.parentNode;
+        const contador = controles.querySelector("[data-contador]");
+        const nomePeca = evento.target.dataset.peca;
+        
+        atualizaPainelControle(operacao, contador);
+        atualizaPainelEstatisticas(operacao, nomePeca);
     })
 });
 
-function manipulaDados(operacao, controles) {
-    const peca = controles.querySelector("[data-contador]");
+function atualizaPainelControle(operacao, contador) {
     if (operacao === "-") {
-        peca.value = parseInt(peca.value) - 1;
+        contador.value = parseInt(contador.value) - 1;
     }
     else {
-        peca.value = parseInt(peca.value) + 1;
+        contador.value = parseInt(contador.value) + 1;
     }
 }
-function atualizaEstatistica(peca) {
+
+function atualizaPainelEstatisticas(operacao, nomePeca) {
     estatisticas.forEach((elemento) => {
-        elemento.textContent= parseInt(elemento.textContent) + pecas[peca][elemento.dataset.estatistica]
+        if (operacao === "-") {
+            elemento.textContent= parseInt(elemento.textContent) - pecas[nomePeca][elemento.dataset.estatistica];
+        }
+        else {
+            elemento.textContent= parseInt(elemento.textContent) + pecas[nomePeca][elemento.dataset.estatistica];
+        }        
     });
 }
